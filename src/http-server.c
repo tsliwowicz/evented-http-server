@@ -101,8 +101,7 @@ int get_num_cpus()
 				strerror (errno));
 		exit(1);
 	}
-	//return nprocs;
-	return 1;
+	return nprocs;
 }
 
 int http_server_start(unsigned short port, http_handler_t http_handlers[], int num_handlers)
@@ -180,8 +179,7 @@ int http_server_start(unsigned short port, http_handler_t http_handlers[], int n
 
 	for(i= 0; i < num_cpus; i++)
 	{
-		//apr_thread_pool_push(thread_pool, http_server, &server_data, APR_THREAD_TASK_PRIORITY_HIGHEST, NULL);
-		http_server(NULL, &server_data);
+		apr_thread_pool_push(thread_pool, http_server, &server_data, APR_THREAD_TASK_PRIORITY_HIGHEST, NULL);
 	}
 
 	//TODO: check number of worker threads + add a thread safe stop_server function
