@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <apr-1.0/apr_time.h>
 #include "http-server.h"
 
 #define json_output "{\"message\":\"Hello, World!\"}"
@@ -71,6 +72,14 @@ void json_handler(struct evhttp_request *req)
 
 int main(int c, char **v)
 {
-	http_server_start(8080, handlers, NUM_HANDLERS);
+    http_server_init();
+	http_server_start(8080, handlers, NUM_HANDLERS, "/var/www");
+
+	while (http_server_is_active())
+	{
+	    apr_sleep(APR_USEC_PER_SEC/100); //10 ms
+	}
+
+	http_server_cleanup();
 	return(0);
 }

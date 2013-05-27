@@ -36,7 +36,12 @@ typedef struct http_handler_struct {
 	char *uri;
 } http_handler_t;
 
-int http_server_start(unsigned short port, http_handler_t http_handlers[], int num_handlers);
+int http_server_start(unsigned short port, http_handler_t http_handlers[], int num_handlers, const char *static_root);
+void http_server_stop(int to_wait);
+void http_server_init();
+void http_server_cleanup();
+int http_server_is_active();
+const char* http_server_cmd_type_to_str(enum evhttp_cmd_type cmd);
 
 #ifdef __cplusplus
 }
