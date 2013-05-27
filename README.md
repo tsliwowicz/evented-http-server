@@ -13,6 +13,12 @@ apr (APR 1.4.6, APR-util 1.5.2 - http://apr.apache.org/)
 In ubuntu you can install them as following;
 sudo apt-get install libevent-dev libapr1-dev
 
+BUILD 
+=====
+
+cd into either the Release or the Debug subdirectories and run
+make
+
 License
 =======
 
