@@ -313,7 +313,7 @@ int http_server_start(unsigned short port, http_handler_t http_handlers[], int n
 
 	num_servers = num_cpus;
 
-	server_base = apr_pcalloc(global_pool, num_servers * sizeof(struct event_base *));
+	server_base = apr_pcalloc(global_pool, (num_servers + 1) * sizeof(struct event_base *));
 
 	for(i= 0; i < num_servers; i++)
 	{
@@ -328,11 +328,14 @@ int http_server_start(unsigned short port, http_handler_t http_handlers[], int n
 
 void http_server_stop(int to_wait)
 {
-    int i;
-    for(i= 0; i < num_servers; i++)
+    int i, n = apr_atomic_read32(&num_servers);
+    for(i= 0; i < n; i++)
     {
         if (server_base[i])
+        {
             event_base_loopbreak(server_base[i]);
+            server_base[i] = NULL;
+        }
     }
 
     if (to_wait)
@@ -411,8 +414,8 @@ done:
     }
 	if (base)
 	{
+        server_base[server_data->server_index] = NULL;
 	    event_base_free(base);
-	    server_base[server_data->server_index] = NULL;
 	}
 
 	apr_atomic_dec32(&num_servers);

@@ -17,7 +17,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <apr-1.0/apr_time.h>
+#include <signal.h>
+#include <unistd.h>
 #include "http-server.h"
 
 #define json_output "{\"message\":\"Hello, World!\"}"
@@ -28,7 +29,6 @@ static void json_handler(struct evhttp_request *req);
 static void xml_handler(struct evhttp_request *req);
 
 //TODO: add - generic handler
-//TODO: add - files handler
 static http_handler_t handlers[] = {
 		{json_handler, "/json"},
 		{xml_handler, "/xml"}
@@ -70,15 +70,23 @@ void json_handler(struct evhttp_request *req)
 	evbuffer_free(rep_buf);
 }
 
+static void ctrl_c_handler(int sig)
+{
+    http_server_stop(0);
+}
+
 int main(int c, char **v)
 {
     http_server_init();
 	http_server_start(8080, handlers, NUM_HANDLERS, "/var/www");
+	signal (SIGINT,ctrl_c_handler);
 
 	while (http_server_is_active())
 	{
-	    apr_sleep(APR_USEC_PER_SEC/100); //10 ms
+	    usleep(10000); //10 ms
 	}
+
+	fprintf(stderr, "bye bye\n");
 
 	http_server_cleanup();
 	return(0);
