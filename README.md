@@ -10,6 +10,8 @@ Dependencies
 libevent (I used https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz)
 apr (APR 1.4.6, APR-util 1.5.2 - http://apr.apache.org/)
 
+In ubuntu you can install them as following;
+sudo apt-get install libevent-dev libapr1-dev
 
 License
 =======
